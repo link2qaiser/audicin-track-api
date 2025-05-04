@@ -45,6 +45,66 @@ const login = (req, res, next) => {
   );
 };
 
+/**
+ * Register a new user
+ */
+const signup = (req, res, next) => {
+  const { username, password, role } = req.body;
+
+  // Validate request
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Please provide username and password' });
+  }
+
+  if (!role || !['admin', 'partner'].includes(role)) {
+    return res.status(400).json({ error: 'Role must be either "admin" or "partner"' });
+  }
+
+  // Check if username already exists
+  db.get('SELECT id FROM users WHERE username = ?', [username], (err, user) => {
+    if (err) {
+      return next(err);
+    }
+
+    if (user) {
+      return res.status(400).json({ error: 'Username already exists' });
+    }
+
+    // Hash password
+    bcrypt.hash(password, 10, (err, hashedPassword) => {
+      if (err) {
+        return next(err);
+      }
+
+      // Insert new user
+      db.run(
+        'INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
+        [username, hashedPassword, role],
+        function(err) {
+          if (err) {
+            return next(err);
+          }
+
+          const newUser = {
+            id: this.lastID,
+            username,
+            role
+          };
+
+          // Generate token
+          const token = generateToken(newUser);
+
+          res.status(201).json({
+            token,
+            user: newUser
+          });
+        }
+      );
+    });
+  });
+};
+
 module.exports = {
-  login
+  login,
+  signup
 };
