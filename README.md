@@ -125,6 +125,16 @@ audicin-backend/
 - **GET /api/license**: View licensed tracks
   *Requires partner role*
 
+
+## Running Tests
+
+The project is set up with Jest for automated testing:
+
+```bash
+# Run all tests
+yarn test
+```
+
 ## Design Choices
 
 1. **Architecture Pattern**: Used a layered architecture with controllers, services, and models to maintain separation of concerns and promote clean, modular code.
