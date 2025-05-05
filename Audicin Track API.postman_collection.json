@@ -1,0 +1,280 @@
+{
+	"info": {
+		"_postman_id": "5f528082-8956-4272-982d-7969d9eae01e",
+		"name": "Audicin Track API",
+		"description": "Collection for testing the Audicin Track licensing API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "327876"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"token\", jsonData.token);",
+									"console.log('Logged in as: ' + jsonData.user.username);",
+									"console.log('Role: ' + jsonData.user.role);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login to get JWT token - change username/password as needed (admin or partner)"
+					},
+					"response": []
+				},
+				{
+					"name": "Signup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"token\", jsonData.token);",
+									"console.log('Registered as: ' + jsonData.user.username);",
+									"console.log('Role: ' + jsonData.user.role);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"partner1\",\n    \"password\": \"partner123\",\n    \"role\": \"partner\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						},
+						"description": "Register a new user - role must be either 'admin' or 'partner'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tracks",
+			"item": [
+				{
+					"name": "Upload Track (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Amazing Track\",\n    \"description\": \"This is an amazing track for testing\",\n    \"genre\": \"Electronic\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/tracks",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tracks"
+							]
+						},
+						"description": "Admin uploads a new track (requires admin role)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Tracks (Partner)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/tracks",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tracks"
+							]
+						},
+						"description": "Partner fetches list of tracks (requires partner role)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Licenses",
+			"item": [
+				{
+					"name": "Create License (Partner)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"trackId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/license",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"license"
+							]
+						},
+						"description": "Partner licenses a track (requires partner role)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Licenses (Partner)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/license",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"license"
+							]
+						},
+						"description": "Partner views licensed tracks (requires partner role)"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000"
+		},
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcm5hbWUiOiJwYXJ0bmVyMSIsInJvbGUiOiJwYXJ0bmVyIiwiaWF0IjoxNzQ2MzcyNDI3LCJleHAiOjE3NDY0NTg4Mjd9.OE0pDzxtPGJmqlVXu0VDtMLp0UvFgDPE-qPjmFbzfNk",
+			"type": "string"
+		}
+	]
+}
