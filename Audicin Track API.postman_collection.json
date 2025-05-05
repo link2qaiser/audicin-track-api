@@ -273,7 +273,7 @@
 		},
 		{
 			"key": "token",
-			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcm5hbWUiOiJwYXJ0bmVyMSIsInJvbGUiOiJwYXJ0bmVyIiwiaWF0IjoxNzQ2MzcyNDI3LCJleHAiOjE3NDY0NTg4Mjd9.OE0pDzxtPGJmqlVXu0VDtMLp0UvFgDPE-qPjmFbzfNk",
+			"value": "",
 			"type": "string"
 		}
 	]
